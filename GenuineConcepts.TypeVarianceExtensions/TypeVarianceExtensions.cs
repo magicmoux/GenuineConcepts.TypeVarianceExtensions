@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace System.TypeVarianceExtensions
 {
     //TODO decide whether we return the most direct type in the inheritance chain or all matches
-    // 
+    //
     /// <summary>
     /// From <a href="https://learn.microsoft.com/fr-fr/dotnet/api/system.type.getinterfaces?view=net-9.0">Type.GetInterfaces Method</a>
     /// <quote>
@@ -21,7 +20,6 @@ namespace System.TypeVarianceExtensions
 
         internal static readonly ConcurrentBag<Tuple<Type, Type>> _nonConvertibleAssociations = new ConcurrentBag<Tuple<Type, Type>>();
         internal static readonly ConcurrentDictionary<Tuple<Type, Type>, Tuple<Type, Lazy<Delegate>>> _conversionCache = new ConcurrentDictionary<Tuple<Type, Type>, Tuple<Type, Lazy<Delegate>>>();
-
 
 #if NET45_OR_GREATER || NETSTANDARD2_0
         /// <summary>
@@ -186,7 +184,7 @@ namespace System.TypeVarianceExtensions
             return true;
         }
 
-        #endregion
+        #endregion Type Variance Checking
 
         #region Instances effective conversions to covariant type
 
@@ -227,7 +225,7 @@ namespace System.TypeVarianceExtensions
             return typeof(T).IsVariantOf(targetType, out runtimeType);
         }
 
-        static readonly Func<Tuple<Type, Type>, Type, Lazy<Delegate>> BuildDelegate =
+        private static readonly Func<Tuple<Type, Type>, Type, Lazy<Delegate>> BuildDelegate =
             (t, rt) => new Lazy<Delegate>(() => CreateDelegate(t.Item1, rt));
 
         public static Delegate CreateDelegate(Type sourceType, Type runtimeType)
@@ -236,6 +234,6 @@ namespace System.TypeVarianceExtensions
             return Expression.Lambda(Expression.Convert(lbdParam, runtimeType), lbdParam).Compile();
         }
 
-        #endregion
+        #endregion Instances effective conversions to covariant type
     }
 }

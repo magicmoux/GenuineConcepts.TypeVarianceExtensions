@@ -212,17 +212,20 @@ namespace System.TypeVarianceExtensions
 
         public static bool IsInstanceOf<T, TOut>(this T instance)
         {
-            return typeof(T).IsVariantOf(typeof(TOut));
+            if (instance == null) return typeof(T).IsVariantOf(typeof(TOut));
+            return instance.GetType().IsVariantOf(typeof(TOut));
         }
 
         public static bool IsInstanceOf<T>(this T instance, Type targetType)
         {
-            return typeof(T).IsVariantOf(targetType);
+            if (instance == null) return typeof(T).IsVariantOf(targetType);
+            return instance.GetType().IsVariantOf(targetType);
         }
 
         public static bool IsInstanceOf<T>(this T instance, Type targetType, out Type runtimeType)
         {
-            return typeof(T).IsVariantOf(targetType, out runtimeType);
+            if (instance == null) return typeof(T).IsVariantOf(targetType, out runtimeType);
+            return instance.GetType().IsVariantOf(targetType, out runtimeType);
         }
 
         private static readonly Func<Tuple<Type, Type>, Type, Lazy<Delegate>> BuildDelegate =
